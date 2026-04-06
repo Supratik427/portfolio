@@ -51,6 +51,15 @@ h3{
     background-color: rgb(227, 227, 227);font-size: 25px;
     border-top: 5px solid maroon;padding:25px;margin:25px;
 }
+.proj{
+    display: flex;gap:20px;
+
+}
+
+.pro1{flex:1;
+    background-color: rgb(227, 227, 227);font-size: 25px;
+    border-top: 5px solid maroon;padding:25px;margin:25px;
+}
 .ski{
     display: flex;gap:20px;
 }
