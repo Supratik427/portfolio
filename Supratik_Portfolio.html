@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Muriki Supratik — Software Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF1EC;
+    --paper-card:#F8F9F5;
+    --ink:#16233B;
+    --ink-soft:#3C4A63;
+    --grid-line: rgba(22,35,59,0.08);
+    --grid-line-strong: rgba(22,35,59,0.16);
+    --blue:#2E6F96;
+    --red:#C6482E;
+    --white:#ffffff;
+    --radius: 2px;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    font-size:16px;
+    line-height:1.55;
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important;}
+  }
+
+  a{color:var(--blue); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  a:focus-visible, button:focus-visible{outline:2px solid var(--red); outline-offset:3px;}
+
+  .mono{font-family:'IBM Plex Mono', monospace;}
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+  }
+
+  h1,h2,h3{
+    font-family:'Archivo', sans-serif;
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+
+  .wrap{
+    max-width:1080px;
+    margin:0 auto;
+    padding:0 28px;
+  }
+
+  /* crop marks */
+  .crop{position:fixed; width:14px; height:14px; z-index:40; pointer-events:none;}
+  .crop::before,.crop::after{content:'';position:absolute;background:var(--ink);}
+  .crop::before{width:100%;height:1px;top:50%;left:0;}
+  .crop::after{width:1px;height:100%;left:50%;top:0;}
+  .crop.tl{top:14px;left:14px;} .crop.tr{top:14px;right:14px;}
+  .crop.bl{bottom:14px;left:14px;} .crop.br{bottom:14px;right:14px;}
+  @media (max-width:640px){.crop{display:none;}}
+
+  /* ---------- NAV ---------- */
+  header.nav{
+    position:sticky; top:0; z-index:30;
+    background:rgba(238,241,236,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--grid-line-strong);
+  }
+  .navbar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 28px;
+    max-width:1080px; margin:0 auto;
+  }
+  .navmark{font-family:'IBM Plex Mono'; font-weight:600; font-size:14px; letter-spacing:.04em;}
+  .navmark span{color:var(--red);}
+  nav.links{display:flex; gap:26px;}
+  nav.links a{
+    font-family:'IBM Plex Mono'; font-size:12px; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--ink); text-decoration:none; position:relative; padding-bottom:2px;
+  }
+  nav.links a::after{
+    content:''; position:absolute; left:0; bottom:-2px; width:0; height:1px; background:var(--red);
+    transition:width .25s ease;
+  }
+  nav.links a:hover::after{width:100%;}
+  @media (max-width:680px){ nav.links{display:none;} }
+
+  /* ---------- SHEET (generic section wrapper) ---------- */
+  .sheet{
+    position:relative;
+    padding:88px 0 60px;
+    border-bottom:1px solid var(--grid-line-strong);
+    opacity:0;
+    transform:translateY(18px);
+    transition:opacity .7s ease, transform .7s ease;
+  }
+  .sheet.in{opacity:1; transform:translateY(0);}
+  .sheet:last-of-type{border-bottom:none;}
+
+  .sheet-head{
+    display:flex; align-items:baseline; gap:16px; margin-bottom:36px;
+    flex-wrap:wrap;
+  }
+  .sheet-num{
+    font-family:'IBM Plex Mono'; font-size:13px; color:var(--red); font-weight:600;
+  }
+  .sheet-title{font-size:clamp(26px,3.4vw,38px); font-weight:700;}
+  .sheet-rule{flex:1; min-width:60px; height:1px; background:var(--grid-line-strong); align-self:center;}
+
+  /* ---------- TITLE BLOCK (signature element) ---------- */
+  .titleblock{
+    border:1.5px solid var(--ink);
+    background:var(--paper-card);
+    display:grid;
+    grid-template-columns: repeat(4, 1fr);
+    font-family:'IBM Plex Mono';
+    font-size:11px;
+    margin-top:40px;
+  }
+  .titleblock .cell{
+    padding:10px 14px;
+    border-right:1px solid var(--grid-line-strong);
+    border-top:1px solid var(--grid-line-strong);
+  }
+  .titleblock .cell:nth-child(4n){border-right:none;}
+  .titleblock .cell:nth-child(-n+4){border-top:none;}
+  .titleblock .label{display:block; color:var(--ink-soft); font-size:9px; letter-spacing:.08em; text-transform:uppercase; margin-bottom:4px;}
+  .titleblock .val{color:var(--ink); font-weight:500;}
+  @media (max-width:680px){
+    .titleblock{grid-template-columns: repeat(2,1fr);}
+    .titleblock .cell:nth-child(2n){border-right:none;}
+    .titleblock .cell:nth-child(-n+2){border-top:none;}
+    .titleblock .cell:nth-child(3),.titleblock .cell:nth-child(4){border-top:1px solid var(--grid-line-strong);}
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{padding-top:120px;}
+  .hero .wrap{position:relative;}
+  .hero-eyebrow{margin-bottom:22px;}
+  .hero h1{
+    font-size:clamp(40px, 7vw, 84px);
+    font-weight:800;
+    line-height:0.98;
+  }
+  .hero h1 .accent{color:var(--red);}
+  .hero-role{
+    margin-top:20px;
+    font-family:'IBM Plex Mono';
+    font-size:clamp(13px,1.6vw,16px);
+    color:var(--ink-soft);
+    display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+  }
+  .hero-role .dot{width:5px;height:5px;background:var(--red); border-radius:50%; display:inline-block;}
+  .hero-summary{
+    margin-top:32px;
+    max-width:640px;
+    font-size:17px;
+    color:var(--ink-soft);
+  }
+  .hero-contact{
+    margin-top:36px;
+    display:flex; flex-wrap:wrap; gap:14px;
+  }
+  .btn{
+    font-family:'IBM Plex Mono'; font-size:12px; letter-spacing:.05em; text-transform:uppercase;
+    padding:12px 20px; border:1.5px solid var(--ink); color:var(--ink);
+    text-decoration:none; display:inline-flex; align-items:center; gap:8px;
+    transition: all .2s ease;
+    background:transparent;
+  }
+  .btn:hover{background:var(--ink); color:var(--paper); text-decoration:none;}
+  .btn.primary{background:var(--red); border-color:var(--red); color:var(--white);}
+  .btn.primary:hover{background:var(--ink); border-color:var(--ink);}
+
+  /* dimension callout under hero */
+  .dim-row{
+    margin-top:64px;
+    display:grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap:0;
+    border-top:1px solid var(--grid-line-strong);
+  }
+  .dim-item{padding:18px 18px 0 0; border-right:1px solid var(--grid-line-strong);}
+  .dim-item:last-child{border-right:none;}
+  .dim-num{font-family:'Archivo'; font-weight:800; font-size:clamp(22px,3vw,30px); color:var(--ink);}
+  .dim-label{font-family:'IBM Plex Mono'; font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-soft); margin-top:4px;}
+  @media (max-width:680px){
+    .dim-row{grid-template-columns:repeat(2,1fr);}
+    .dim-item{padding-bottom:18px; border-bottom:1px solid var(--grid-line-strong);}
+  }
+
+  /* ---------- SUMMARY / ABOUT ---------- */
+  .about-grid{display:grid; grid-template-columns: 1.3fr 1fr; gap:48px;}
+  @media (max-width:800px){.about-grid{grid-template-columns:1fr;}}
+  .about-text p{color:var(--ink-soft); font-size:16px; margin:0 0 16px;}
+  .about-text strong{color:var(--ink);}
+  .edu-card{
+    border:1px solid var(--grid-line-strong);
+    background:var(--paper-card);
+    padding:22px;
+    position:relative;
+  }
+  .edu-card::before{
+    content:'EDU';
+    position:absolute; top:-10px; left:18px;
+    background:var(--red); color:#fff;
+    font-family:'IBM Plex Mono'; font-size:10px; letter-spacing:.08em;
+    padding:3px 8px;
+  }
+  .edu-card h3{font-size:19px; margin-bottom:6px;}
+  .edu-card .school{font-family:'IBM Plex Mono'; font-size:12px; color:var(--ink-soft); margin-bottom:14px;}
+  .edu-stat{display:flex; justify-content:space-between; font-family:'IBM Plex Mono'; font-size:12px; padding:8px 0; border-top:1px dashed var(--grid-line-strong);}
+  .edu-stat span:last-child{color:var(--red); font-weight:600;}
+
+  /* ---------- SKILLS ---------- */
+  .specs{border-top:1px solid var(--grid-line-strong);}
+  .spec-row{
+    display:grid; grid-template-columns: 200px 1fr;
+    border-bottom:1px solid var(--grid-line-strong);
+    padding:18px 0;
+    gap:18px;
+  }
+  @media (max-width:680px){.spec-row{grid-template-columns:1fr;}}
+  .spec-key{font-family:'IBM Plex Mono'; font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--red); padding-top:4px;}
+  .spec-tags{display:flex; flex-wrap:wrap; gap:9px 10px;}
+  .tag{
+    font-family:'IBM Plex Mono'; font-size:12.5px;
+    padding:6px 11px;
+    border:1px solid var(--grid-line-strong);
+    background:var(--paper-card);
+    color:var(--ink-soft);
+    white-space:nowrap;
+  }
+
+  /* ---------- PROJECTS ---------- */
+  .project{
+    border:1px solid var(--grid-line-strong);
+    background:var(--paper-card);
+    margin-bottom:26px;
+    position:relative;
+    overflow:hidden;
+  }
+  .project-top{
+    display:flex; justify-content:space-between; align-items:flex-start;
+    padding:24px 26px 0;
+    gap:16px; flex-wrap:wrap;
+  }
+  .project-index{font-family:'IBM Plex Mono'; font-size:12px; color:var(--red); font-weight:600;}
+  .project h3{font-size:24px; margin-top:6px;}
+  .project-stack{font-family:'IBM Plex Mono'; font-size:11px; color:var(--ink-soft); margin-top:6px; letter-spacing:.02em;}
+  .project-links{display:flex; gap:10px; flex-shrink:0;}
+  .project-links a{
+    font-family:'IBM Plex Mono'; font-size:11px; text-transform:uppercase; letter-spacing:.05em;
+    border:1px solid var(--ink); padding:7px 12px; color:var(--ink);
+    transition:all .2s ease;
+  }
+  .project-links a:hover{background:var(--ink); color:var(--paper); text-decoration:none;}
+  .project-body{padding:18px 26px 26px;}
+  .project-body ul{margin:0; padding-left:18px; color:var(--ink-soft);}
+  .project-body li{margin-bottom:8px;}
+  .project-body li::marker{color:var(--red);}
+
+  /* ---------- ACHIEVEMENTS / CERT ---------- */
+  .ac-grid{display:grid; grid-template-columns: 1fr 1fr; gap:24px;}
+  @media (max-width:760px){.ac-grid{grid-template-columns:1fr;}}
+  .ac-card{
+    border-left:3px solid var(--red);
+    background:var(--paper-card);
+    padding:20px 22px;
+    border-top:1px solid var(--grid-line-strong);
+    border-right:1px solid var(--grid-line-strong);
+    border-bottom:1px solid var(--grid-line-strong);
+  }
+  .ac-card .eyebrow{margin-bottom:8px;}
+  .ac-card p{margin:0; color:var(--ink-soft); font-size:14.5px;}
+  .ac-card a{font-family:'IBM Plex Mono'; font-size:12px;}
+
+  /* ---------- FOOTER ---------- */
+  footer{padding:60px 0 90px;}
+  .footer-top{display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:24px; margin-bottom:44px;}
+  .footer-top h2{font-size:clamp(30px,5vw,52px); max-width:560px; line-height:1.05;}
+  .footer-contacts{display:flex; flex-direction:column; gap:10px; font-family:'IBM Plex Mono'; font-size:13px;}
+  .footer-bottom{
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;
+    padding-top:20px; border-top:1px solid var(--grid-line-strong);
+    font-family:'IBM Plex Mono'; font-size:11px; color:var(--ink-soft);
+  }
+
+  ::selection{background:var(--red); color:#fff;}
+</style>
+</head>
+<body>
+
+<div class="crop tl"></div><div class="crop tr"></div><div class="crop bl"></div><div class="crop br"></div>
+
+<header class="nav">
+  <div class="navbar">
+    <div class="navmark">MS<span>—</span>PORTFOLIO<span>.</span>2026</div>
+    <nav class="links">
+      <a href="#about">Sheet 01 · About</a>
+      <a href="#skills">Sheet 02 · Skills</a>
+      <a href="#projects">Sheet 03 · Work</a>
+      <a href="#more">Sheet 04 · More</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO / SHEET 00 -->
+<section class="sheet hero in" id="top">
+  <div class="wrap">
+    <div class="eyebrow hero-eyebrow">SHEET 00 — COVER · REV 2026.07</div>
+    <h1>MURIKI<br>SUPRATIK<span class="accent">.</span></h1>
+    <div class="hero-role">
+      <span>SOFTWARE ENGINEER</span><span class="dot"></span>
+      <span>DATA ANALYST</span><span class="dot"></span>
+      <span>AI / ML</span>
+    </div>
+    <p class="hero-summary">Computer Science undergraduate building end‑to‑end web applications with Java, Spring Boot and React — with working knowledge of SQL‑based data querying, generative AI and prompt engineering. Currently drafting solutions for software engineering, data analyst and AI/ML roles.</p>
+    <div class="hero-contact">
+      <a class="btn primary" href="#projects">View Projects</a>
+      <a class="btn" href="mailto:murikisupratik8@gmail.com">Email Me</a>
+      <a class="btn" href="https://github.com/Supratik427" target="_blank" rel="noopener">GitHub</a>
+      <a class="btn" href="https://www.linkedin.com/in/muriki-supratik-804723426" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+
+    <div class="dim-row">
+      <div class="dim-item"><div class="dim-num">9.22</div><div class="dim-label">CGPA / 10.0</div></div>
+      <div class="dim-item"><div class="dim-num">03</div><div class="dim-label">Shipped Projects</div></div>
+      <div class="dim-item"><div class="dim-num">3rd</div><div class="dim-label">Place · IEEE CICADA</div></div>
+      <div class="dim-item"><div class="dim-num">2028</div><div class="dim-label">Expected Graduation</div></div>
+    </div>
+
+    <div class="titleblock">
+      <div class="cell"><span class="label">Drawn by</span><span class="val">Muriki Supratik</span></div>
+      <div class="cell"><span class="label">Discipline</span><span class="val">CSE (Core)</span></div>
+      <div class="cell"><span class="label">Scale</span><span class="val">Not to scale</span></div>
+      <div class="cell"><span class="label">Sheet</span><span class="val">00 of 04</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- SHEET 01 — ABOUT / EDUCATION -->
+<section class="sheet" id="about">
+  <div class="wrap">
+    <div class="sheet-head">
+      <span class="sheet-num">SHEET 01</span>
+      <h2 class="sheet-title">Profile &amp; Education</h2>
+      <div class="sheet-rule"></div>
+    </div>
+    <div class="about-grid">
+      <div class="about-text">
+        <p><strong>Building for the full stack, end to end.</strong> Grounded in Data Structures &amp; Algorithms, DBMS and full‑stack development, with hands‑on experience shipping web applications in Java, Spring Boot and React.js.</p>
+        <p>Comfortable across the stack: querying and modelling data in SQL, and applying generative AI and prompt engineering to real product problems — from recipe discovery to AI‑driven interview coaching.</p>
+        <p>Looking to bring that problem‑solving toward <strong>Software Engineer</strong>, <strong>Data Analyst</strong> and <strong>AI/ML</strong> roles where hands‑on project experience meets real engineering constraints.</p>
+      </div>
+      <div class="edu-card">
+        <h3>B.Tech, Computer Science &amp; Engineering</h3>
+        <div class="school">Vellore Institute of Technology (VIT), Vellore</div>
+        <div class="edu-stat"><span>Duration</span><span>2024 – 2028</span></div>
+        <div class="edu-stat"><span>Track</span><span>CSE (Core)</span></div>
+        <div class="edu-stat"><span>CGPA</span><span>9.22 / 10</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SHEET 02 — SKILLS -->
+<section class="sheet" id="skills">
+  <div class="wrap">
+    <div class="sheet-head">
+      <span class="sheet-num">SHEET 02</span>
+      <h2 class="sheet-title">Technical Specification</h2>
+      <div class="sheet-rule"></div>
+    </div>
+    <div class="specs">
+      <div class="spec-row">
+        <div class="spec-key">Languages</div>
+        <div class="spec-tags">
+          <span class="tag">Java</span><span class="tag">Python</span><span class="tag">C</span><span class="tag">C++</span><span class="tag">SQL</span>
+        </div>
+      </div>
+      <div class="spec-row">
+        <div class="spec-key">Frontend</div>
+        <div class="spec-tags">
+          <span class="tag">HTML5</span><span class="tag">CSS3</span><span class="tag">JavaScript</span><span class="tag">React.js</span>
+        </div>
+      </div>
+      <div class="spec-row">
+        <div class="spec-key">Backend</div>
+        <div class="spec-tags">
+          <span class="tag">Spring Boot</span><span class="tag">JDBC</span>
+        </div>
+      </div>
+      <div class="spec-row">
+        <div class="spec-key">Databases</div>
+        <div class="spec-tags">
+          <span class="tag">MySQL</span>
+        </div>
+      </div>
+      <div class="spec-row">
+        <div class="spec-key">AI / ML</div>
+        <div class="spec-tags">
+          <span class="tag">Generative AI</span><span class="tag">Prompt Engineering</span>
+        </div>
+      </div>
+      <div class="spec-row">
+        <div class="spec-key">Tools</div>
+        <div class="spec-tags">
+          <span class="tag">Git</span><span class="tag">GitHub</span><span class="tag">VS Code</span><span class="tag">Postman</span><span class="tag">Vercel</span><span class="tag">Hugging Face</span>
+        </div>
+      </div>
+      <div class="spec-row">
+        <div class="spec-key">Core CS</div>
+        <div class="spec-tags">
+          <span class="tag">Data Structures &amp; Algorithms</span><span class="tag">OOP</span><span class="tag">DBMS</span><span class="tag">Computer Networks</span><span class="tag">Operating Systems</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SHEET 03 — PROJECTS -->
+<section class="sheet" id="projects">
+  <div class="wrap">
+    <div class="sheet-head">
+      <span class="sheet-num">SHEET 03</span>
+      <h2 class="sheet-title">Selected Work</h2>
+      <div class="sheet-rule"></div>
+    </div>
+
+    <div class="project">
+      <div class="project-top">
+        <div>
+          <div class="project-index">01 / RECIPE DISCOVERY &amp; MEAL PLANNING</div>
+          <h3>RecipePal</h3>
+          <div class="project-stack">HTML5 · CSS3 · JavaScript · MealDB API</div>
+        </div>
+        <div class="project-links">
+          <a href="https://github.com/Supratik427/recipal.git" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://supratik427.github.io/recipal/" target="_blank" rel="noopener">Live Demo</a>
+        </div>
+      </div>
+      <div class="project-body">
+        <ul>
+          <li>Fully responsive recipe search and meal‑planning app built from scratch in vanilla JavaScript, integrating the MealDB API for real‑time recipes across multiple cuisines and dietary types.</li>
+          <li>Filterable search by cuisine and veg/non‑veg, a weekly meal planner, a favourites system, and login/signup flows across five structured pages.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="project">
+      <div class="project-top">
+        <div>
+          <div class="project-index">02 / ROBOTICS &amp; REHABILITATION PRODUCT</div>
+          <h3>Motus</h3>
+          <div class="project-stack">HTML5 · CSS3 · Vanilla JavaScript · SVG · Google Fonts</div>
+        </div>
+        <div class="project-links">
+          <a href="https://github.com/Supratik427/MOTUS.git" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://my-motus.vercel.app/" target="_blank" rel="noopener">Live Demo</a>
+        </div>
+      </div>
+      <div class="project-body">
+        <ul>
+          <li>Dual‑product marketing landing page for a robotics/rehab‑device concept, using custom SVG graphics and Google Fonts for a polished, brand‑consistent UI.</li>
+          <li>Responsive, interactive sections — animated stat counters and a working contact form — built around two distinct user journeys: facility teams and clinicians.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="project">
+      <div class="project-top">
+        <div>
+          <div class="project-index">03 / AI MOCK INTERVIEW PLATFORM · PROTOTYPE</div>
+          <h3>Prepzo</h3>
+          <div class="project-stack">Lovable (AI App Builder)</div>
+        </div>
+        <div class="project-links">
+          <a href="https://github.com/Supratik427/prepzo-coach.git" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://prepzo-coach.lovable.app/" target="_blank" rel="noopener">Live Demo</a>
+        </div>
+      </div>
+      <div class="project-body">
+        <ul>
+          <li>Functional prototype for an AI‑powered mock interview platform with 7 role presets (SDE, PM, Data, ML and more) and 5 interview formats (Timed, Live‑Coding, Panel and more).</li>
+          <li>Product UX structured around a scored feedback loop — per‑question rubric, STAR‑based behavioral checks, and model answers for the weakest response.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SHEET 04 — ACHIEVEMENTS + CERTS -->
+<section class="sheet" id="more">
+  <div class="wrap">
+    <div class="sheet-head">
+      <span class="sheet-num">SHEET 04</span>
+      <h2 class="sheet-title">Achievements &amp; Certifications</h2>
+      <div class="sheet-rule"></div>
+    </div>
+    <div class="ac-grid">
+      <div class="ac-card">
+        <div class="eyebrow">Achievement</div>
+        <p><strong style="color:var(--ink)">3rd Place — CICADA</strong><br>An advanced problem‑solving competition organized by the IEEE Computer Society (CSE Chapter), VIT Vellore.</p>
+      </div>
+      <div class="ac-card">
+        <div class="eyebrow">Certification</div>
+        <p><strong style="color:var(--ink)">IBM Generative AI</strong><br>IBM SkillsBuild — <a href="https://courses.ibmcep.cognitiveclass.ai/certificates/9d9274dc16fc4f14985b22660f517d1f" target="_blank" rel="noopener">View Certificate ↗</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER / CONTACT -->
+<footer id="contact">
+  <div class="wrap">
+    <div class="footer-top">
+      <h2>Let's build<br>something, on spec.</h2>
+      <div class="footer-contacts">
+        <a href="mailto:murikisupratik8@gmail.com">murikisupratik8@gmail.com</a>
+        <a href="tel:+919100860759">+91 91008 60759</a>
+        <a href="https://github.com/Supratik427" target="_blank" rel="noopener">github.com/Supratik427</a>
+        <a href="https://www.linkedin.com/in/muriki-supratik-804723426" target="_blank" rel="noopener">linkedin.com/in/muriki-supratik</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>MURIKI SUPRATIK — SHEET 04 OF 04</span>
+      <span>REV 2026.07 · NOT TO SCALE</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const sheets = document.querySelectorAll('.sheet');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, {threshold:0.12});
+  sheets.forEach(s=>io.observe(s));
+</script>
+
+</body>
+</html>
